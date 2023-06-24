@@ -1,17 +1,40 @@
 package com.epam.rd.autotasks;
 
 public class HalvingCarousel extends DecrementingCarousel {
-    public HalvingCarousel(final int capacity) {
+    private boolean isRunning;
+    private int capacity;
+    private CarouselRun carouselRun;
 
+
+    public HalvingCarousel(int capacity) {
         super(capacity);
-
+        this.isRunning = false;
+        this.capacity = capacity;
+        this.carouselRun = new CarouselRun("/");
     }
-    @Override
-    public CarouselRun run() {
-        if (!isRun) {
-            isRun = true;
-            return new HalvingCarouselRun();
+
+    public boolean addElement(int element) {
+
+        if (isRunning) {
+            return false;
         }
-        return null;
+
+        if (element > 0 && capacity > 0) {
+            carouselRun.setAmountOfNotZeroElements(carouselRun.getAmountOfNotZeroElements() + 1);
+            carouselRun.getCarousel().add(element);
+            capacity = capacity - 1;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public CarouselRun run() {
+        if (isRunning) {
+            return null;
+        } else {
+            isRunning = true;
+            return carouselRun;
+        }
     }
 }
